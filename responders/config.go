@@ -21,7 +21,7 @@ type ThenHttp struct {
 type WhenRequest struct {
 	Http    WhenHttp          `yaml:"http"`
 	Headers map[string]string `yaml:"headers"`
-	Body    string            `yaml:"body"`
+	Body    string            `yaml:"body,omitempty"`
 }
 
 // Represents the "then" block under a response object
@@ -37,7 +37,7 @@ type Responder struct {
 }
 
 type ResponderConfig struct {
-	Responders []Responder `yaml:"responder"`
+	Responders []Responder `yaml:"responders"`
 }
 
 // Parse the configuration for a set of responders
@@ -70,7 +70,7 @@ type ResponderConfig struct {
 //  responder_count = len(config.Responders) // 1
 func ParseConfig(yamlFilePath string) (*ResponderConfig, error) {
 
-	r := &ResponderConfig{}
+	var r *ResponderConfig
 
 	yamlFile, err := os.Open(yamlFilePath)
 	if err != nil {
@@ -79,7 +79,7 @@ func ParseConfig(yamlFilePath string) (*ResponderConfig, error) {
 	defer func() {
 		err = yamlFile.Close()
 		if err != nil {
-			fmt.Errorf(err.Error())
+			fmt.Println(err.Error())
 		}
 	}()
 
@@ -88,7 +88,7 @@ func ParseConfig(yamlFilePath string) (*ResponderConfig, error) {
 		return nil, err
 	}
 
-	err = yaml.Unmarshal(yamlBytes, r)
+	err = yaml.Unmarshal(yamlBytes, &r)
 	if err != nil {
 		return nil, err
 	}

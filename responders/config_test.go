@@ -17,3 +17,17 @@ func TestLoadYaml(t *testing.T) {
 	}
 
 }
+
+func TestResponderCount(t *testing.T) {
+	config, err := responders.ParseConfig(fakes)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	const expected = 3
+	actual := len(config.Responders)
+	if actual != expected {
+		t.Fatalf("Expected to %d responders, found %d", expected, actual)
+	}
+}
