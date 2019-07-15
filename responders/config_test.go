@@ -1,7 +1,7 @@
-package loader_test
+package responders_test
 
 import (
-	"github.com/nicklarsennz/mock-http-response/loader"
+	"github.com/nicklarsennz/mock-http-response/responders"
 	"testing"
 )
 
@@ -10,7 +10,7 @@ import (
 const fakes = "testdata/fakes.yml"
 
 func TestLoadYaml(t *testing.T) {
-	_, err := loader.ParseConfig(fakes)
+	_, err := responders.ParseConfig(fakes)
 
 	if err != nil {
 		t.Fatalf(err.Error())
