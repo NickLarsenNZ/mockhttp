@@ -1,5 +1,12 @@
 package loader
 
+import (
+	"fmt"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
+)
+
 type WhenHttp struct {
 	Method string `yaml:"method"`
 	Path   string `yaml:"path"`
@@ -31,6 +38,62 @@ type Responder struct {
 
 type ResponderConfig struct {
 	Responders []Responder `yaml:"responder"`
+}
+
+// Parse the configuration for a set of responders
+// Given the following YAML:
+//  ---
+//  responders:
+//  # Initial page
+//  - when:
+//      http:
+//        method: GET
+//        path: /
+//    then:
+//      http:
+//        status: 200
+//      headers:
+//        Content-Type: text/html
+//      body: |
+//        <html>
+//          <body>
+//            <form method="post" action="/login">
+//              <input type="submit" value="Login" />
+//            </form>
+//          </body>
+//        </html>
+// You can load that:
+//  config, err := loader.ParseConfig("/path/to/spec.yaml")
+//  if err != nil {
+//    panic(err.Error())
+//  }
+//  responder_count = len(config.Responders) // 1
+func ParseConfig(yamlFilePath string) (*ResponderConfig, error) {
+
+	r := &ResponderConfig{}
+
+	yamlFile, err := os.Open(yamlFilePath)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err = yamlFile.Close()
+		if err != nil {
+			fmt.Errorf(err.Error())
+		}
+	}()
+
+	yamlBytes, err := ioutil.ReadAll(yamlFile)
+	if err != nil {
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(yamlBytes, r)
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 var defaultResponseMessages = map[int]string{
