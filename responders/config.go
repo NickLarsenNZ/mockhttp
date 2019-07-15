@@ -1,4 +1,4 @@
-package loader
+package responders
 
 import (
 	"fmt"
@@ -63,7 +63,7 @@ type ResponderConfig struct {
 //          </body>
 //        </html>
 // You can load that:
-//  config, err := loader.ParseConfig("/path/to/spec.yaml")
+//  config, err := responders.ParseConfig("/path/to/spec.yaml")
 //  if err != nil {
 //    panic(err.Error())
 //  }
