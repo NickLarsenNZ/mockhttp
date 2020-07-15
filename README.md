@@ -9,31 +9,31 @@
 package main
 
 import (
-    "encoding/json"
-    "net/http"
+	"encoding/json"
+	"net/http"
 )
 
 type App struct {
-    baseUrl string
-    client *http.Client
+	baseUrl string
+	client  *http.Client
 }
 
 type Thing struct {
-    Name string
+	Name string
 }
 
 func (app *App) GetListOfThings() ([]Thing, error) {
-    res, err := app.client.Get(app.baseUrl + "/things")
-    things := make([]Thing)
-    err := json.NewDecoder(res.Body).Decode(&things)
-    return things, err
+	res, err := app.client.Get(app.baseUrl + "/things")
+	things := make([]Thing)
+	err := json.NewDecoder(res.Body).Decode(&things)
+	return things, err
 }
 
 func NewApp(baseUrl string, client *http.Client) *App {
-    return &App{
-        baseUrl: baseUrl,
-        client: client,
-    }
+	return &App{
+		baseUrl: baseUrl,
+		client:  client,
+	}
 }
 ```
 </details>
@@ -59,30 +59,32 @@ responders:
       ]
 ```
 
-Instantiate the mock `http.Client` and hand it to your app to use. `mock-http-responses` will catch the requests, match them to the `when` conditions and return the `then` response.
+Instantiate the mock `http.Client` and hand it to your app to use. `mock-http-response` will catch the requests, match them to the `when` conditions and return the `then` response.
 
 ```go
 package main
 
 import (
-    mockhttp "github.com/nicklarsennz/mock-http-responder"
+	"testing"
+
+	mockhttp "github.com/nicklarsennz/mock-http-responder"
 )
 
 func TestSomeThing(t *testing.T) {
-    // Instantiate a new http.Client
-    client := mockhttp.NewClient("./fakes.yml")
+	// Instantiate a new http.Client
+	client := mockhttp.NewClient("./fakes.yml")
 
-    // Inject the mock client into the real app
-    app := NewApp(client, "http://localhost/8080")
-    list, err := app.GetListOfThings()
-    if err != nil {
-        t.Errorf("unexpected error: %s", err)
-    }
+	// Inject the mock client into the real app
+	app := NewApp(client, "http://localhost/8080")
+	list, err := app.GetListOfThings()
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 
-    expected := 3
-    actual := len(list)
-    if actual != expected {
-        t.Errorf("expected %d, got %d", expected, actual)
-    }
+	expected := 3
+	actual := len(list)
+	if actual != expected {
+		t.Errorf("expected %d, got %d", expected, actual)
+	}
 }
 ```
