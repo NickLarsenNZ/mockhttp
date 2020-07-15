@@ -75,7 +75,7 @@ func TestSomeThing(t *testing.T) {
 	client := mockhttp.NewClient("./fakes.yml")
 
 	// Inject the mock client into the real app
-	app := NewApp(client, "http://localhost/8080")
+	app := NewApp("http://localhost/8080", client)
 	list, err := app.GetListOfThings()
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
