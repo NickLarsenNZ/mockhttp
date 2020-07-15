@@ -74,14 +74,14 @@ func TestSomeThing(t *testing.T) {
 	// Instantiate a new http.Client
 	client, err := mockhttp.NewClient("./fakes.yml")
 	if err != nil {
-		t.Errorf("mockhttp error: %s", err)
+		t.Errorf(errors.Wrap(err, "mockhttp.NewClient()").Error())
 	}
 
 	// Inject the mock client into the real app
 	app := NewApp("http://localhost/8080", client)
 	list, err := app.GetListOfThings()
 	if err != nil {
-		t.Errorf(errors.Wrap(err, "unexpected error"))
+		t.Errorf(errors.Wrap(err, "app.GetListOfThings()").Error())
 	}
 
 	expected := 3
