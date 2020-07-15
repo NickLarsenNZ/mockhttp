@@ -67,7 +67,7 @@ package main
 import (
 	"testing"
 
-	mockhttp "github.com/nicklarsennz/mock-http-responder"
+	mockhttp "github.com/nicklarsennz/mock-http-response"
 )
 
 func TestSomeThing(t *testing.T) {
