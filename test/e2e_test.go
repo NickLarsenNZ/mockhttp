@@ -13,7 +13,6 @@ import (
 func TestUtility(t *testing.T) {
 	var expectedHeaders = map[string]string{
 		"Content-Type": "application/json",
-		"X":            "Y",
 	}
 
 	client, err := mockhttp.NewClient("./testdata/fakes.yml")
@@ -47,11 +46,12 @@ func TestUtility(t *testing.T) {
 		t.Errorf(errors.Wrap(err, "ioutil.ReadAll").Error())
 	}
 
-	var expectedBody = strings.TrimSpace(`[
-		{"Name": "thing1"},
-		{"Name": "thing2"},
-		{"Name": "thing3"},
-	]`)
+	var expectedBody = strings.TrimSpace(`
+[
+    {"Name": "thing1"},
+    {"Name": "thing2"},
+    {"Name": "thing3"},
+]`)
 	actualBody := strings.TrimSpace(string(body))
 	if expectedBody != actualBody {
 		t.Errorf("\nexpected body: '%s'\nactual body: '%s'", expectedBody, actualBody)
