@@ -50,9 +50,10 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 		case responder.When.Http.Path == req.URL.Path:
 			// logger.Logf("Match host: %s", req.URL.Path)
 			fallthrough
-		// Todo: case responder.When.Headers
-		// What do we want? Check every request header is in the responder
-		// Or Check every responder header is in the request header?
+		// Todo: case responder.When.Headers Check every responder header is in the request header?
+		case responder.When.Headers.AppearIn(req.Header):
+			// logger.Logf("Match headers")
+			fallthrough
 		case responder.When.Body == bodyString(req):
 			// logger.Logf("Match host: %s", req.URL.Path)
 			fallthrough
@@ -62,9 +63,10 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 				headers.Add(k, v)
 			}
 			return &http.Response{
-				Status: fmt.Sprintf("%d %s", responder.Then.Http.Status, responder.Then.Http.Message),
-				Header: headers,
-				Body:   ioutil.NopCloser(bytes.NewBufferString(responder.Then.Body)),
+				Status:     fmt.Sprintf("%d %s", responder.Then.Http.Status, responder.Then.Http.Message),
+				StatusCode: responder.Then.Http.Status,
+				Header:     headers,
+				Body:       ioutil.NopCloser(bytes.NewBufferString(responder.Then.Body)),
 			}
 
 		}
@@ -73,7 +75,7 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 	// Otherwise 404
 	return &http.Response{
 		Status: "404 Not Found",
-		Header: http.Header{"X-NOOP": []string{"blah"}},
+		Header: http.Header{"X-NOOP": []string{"mockhttp failed to match"}},
 		Body:   ioutil.NopCloser(bytes.NewBufferString("Error: mockhttp could not find the responder for the given conditions")),
 	}
 }

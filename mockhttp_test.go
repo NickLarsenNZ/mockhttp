@@ -1,7 +1,9 @@
 package mockhttp
 
 import (
+	"io/ioutil"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/nicklarsennz/mock-http-response/responders"
@@ -41,10 +43,31 @@ func TestMatchResponse(t *testing.T) {
 		t.Fatalf("nil response")
 	}
 
+	// Check HTTP Status
+	expectedStatus := 200
+	actualStatus := response.StatusCode
+	if expectedStatus != actualStatus {
+		t.Errorf("\nexpected Status: '%d'\ngot Status: '%d', %s", expectedStatus, actualStatus, response.Status)
+	}
+
+	// Check Headers
 	expectedContentType := "text/plain"
 	actualContentType := response.Header.Get("Content-Type")
 
 	if expectedContentType != actualContentType {
 		t.Errorf("\nexpected Content-Type: '%s'\ngot Content-Type: '%s'", expectedContentType, actualContentType)
+	}
+
+	// Check Body
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		t.Errorf(errors.Wrap(err, "ioutil.ReadAll").Error())
+	}
+
+	expectedBody := "Hello"
+	actualBody := strings.TrimSpace(string(body))
+
+	if expectedBody != actualBody {
+		t.Errorf("\nexpected body: '%s'\nactual body: '%s'", expectedBody, actualBody)
 	}
 }

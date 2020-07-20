@@ -2,10 +2,37 @@ package responders
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"net/http"
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
+
+type Headers map[string]string
+
+func (h Headers) AppearIn(headers http.Header) bool {
+	// Default to true, as no headers mean allow anything
+	var matches = true
+	// For each of our required headers
+	for k, v := range h {
+		// If we have at least one header, then it better match
+		matches = false
+		// http.Header has a list of values
+		for _, value := range headers.Values(k) {
+			if v == value {
+				// Cool, move on to the next header
+				break
+			}
+		}
+		// If there were no matches, return false straight away
+		if !matches {
+			return matches
+		}
+		// Otherwise, move on to the next header
+	}
+	return matches // this will always be true
+}
 
 type WhenHttp struct {
 	Method string `yaml:"method"`
@@ -19,9 +46,9 @@ type ThenHttp struct {
 
 // Represents the "when" block under a response object
 type WhenRequest struct {
-	Http    WhenHttp          `yaml:"http"`
-	Headers map[string]string `yaml:"headers"`
-	Body    string            `yaml:"body,omitempty"`
+	Http    WhenHttp `yaml:"http"`
+	Headers Headers  `yaml:"headers"`
+	Body    string   `yaml:"body,omitempty"`
 }
 
 // Represents the "then" block under a response object
