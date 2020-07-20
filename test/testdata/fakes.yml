@@ -1,0 +1,18 @@
+responders:
+- when:
+    http:
+      method: GET
+      path: /things
+    headers:
+      Content-Type: application/json
+  then:
+    http:
+      status: 200
+    headers:
+      Content-Type: application/json
+    body: |
+      [
+          {"Name": "thing1"},
+          {"Name": "thing2"},
+          {"Name": "thing3"},
+      ]
