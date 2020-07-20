@@ -4,6 +4,22 @@ responders:
       method: GET
       path: /things
     headers:
+      Content-Type: text/plain
+  then:
+    http:
+      status: 200
+    headers:
+      Content-Type: text/plain
+    body: |
+      thing1
+      thing2
+      thing3
+
+- when:
+    http:
+      method: GET
+      path: /things
+    headers:
       Content-Type: application/json
   then:
     http:
