@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/nicklarsennz/mock-http-response/responders"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 )
 
@@ -85,8 +87,11 @@ func main() {
 					file_flag,
 				},
 				Action: func(c *cli.Context) error {
-					fmt.Println("List mappings")
-					return nil
+					config, err := responders.ParseConfig(c.String("file"))
+					if err != nil {
+						return errors.Wrap(err, "error listing responders")
+					}
+					return listResponderMappings(config)
 				},
 			},
 		},
