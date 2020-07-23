@@ -20,7 +20,7 @@ func TestUtility(t *testing.T) {
 		t.Errorf(errors.Wrap(err, "mockhttp.NewClient").Error())
 	}
 
-	req, err := http.NewRequest("GET", "http://anything/", nil)
+	req, err := http.NewRequest("GET", "http://anything/things", nil)
 	if err != nil {
 		t.Errorf(errors.Wrap(err, "http.NewRequest").Error())
 	}
