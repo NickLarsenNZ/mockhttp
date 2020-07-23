@@ -22,6 +22,7 @@ func (h Headers) AppearIn(headers http.Header) bool {
 		for _, value := range headers.Values(k) {
 			if v == value {
 				// Cool, move on to the next header
+				matches = true
 				break
 			}
 		}
