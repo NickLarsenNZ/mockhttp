@@ -43,32 +43,30 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 
 	// Loop through responders which match the method and path
 	for _, responder := range config.Responders {
-		switch {
-		case responder.When.Http.Method == req.Method:
-			// logger.Logf("Match host: %s", req.Method)
-			fallthrough
-		case responder.When.Http.Path == req.URL.Path:
-			// logger.Logf("Match host: %s", req.URL.Path)
-			fallthrough
-		// Todo: case responder.When.Headers Check every responder header is in the request header?
-		case responder.When.Headers.AppearIn(req.Header):
-			// logger.Logf("Match headers")
-			fallthrough
-		case responder.When.Body == bodyString(req):
-			// logger.Logf("Match host: %s", req.URL.Path)
-			fallthrough
-		default:
-			var headers = make(http.Header)
-			for k, v := range responder.Then.Headers {
-				headers.Add(k, v)
-			}
-			return &http.Response{
-				Status:     fmt.Sprintf("%d %s", responder.Then.Http.Status, responder.Then.Http.Message),
-				StatusCode: responder.Then.Http.Status,
-				Header:     headers,
-				Body:       ioutil.NopCloser(bytes.NewBufferString(responder.Then.Body)),
-			}
 
+		// Skip if no match
+		if responder.When.Http.Method != req.Method {
+			continue
+		}
+		if responder.When.Http.Path != req.URL.Path {
+			continue
+		}
+		if !responder.When.Headers.AppearIn(req.Header) {
+			continue
+		}
+		if responder.When.Body != bodyString(req) {
+			continue
+		}
+
+		var headers = make(http.Header)
+		for k, v := range responder.Then.Headers {
+			headers.Add(k, v)
+		}
+		return &http.Response{
+			Status:     fmt.Sprintf("%d %s", responder.Then.Http.Status, responder.Then.Http.Message),
+			StatusCode: responder.Then.Http.Status,
+			Header:     headers,
+			Body:       ioutil.NopCloser(bytes.NewBufferString(responder.Then.Body)),
 		}
 	}
 
