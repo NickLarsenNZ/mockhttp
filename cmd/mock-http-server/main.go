@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -62,8 +61,11 @@ func main() {
 					port_flag,
 				},
 				Action: func(c *cli.Context) error {
-					fmt.Println("Serve HTTP")
-					return nil
+					config, err := responders.ParseConfig(c.String("file"))
+					if err != nil {
+						return errors.Wrap(err, "error listing responders")
+					}
+					return newServer(config, c.String("bind"), c.Int("port")).ListenAndServe()
 				},
 				Subcommands: []*cli.Command{
 					{
@@ -74,8 +76,11 @@ func main() {
 							key_flag,
 						},
 						Action: func(c *cli.Context) error {
-							fmt.Println("Serve HTTPS")
-							return nil
+							config, err := responders.ParseConfig(c.String("file"))
+							if err != nil {
+								return errors.Wrap(err, "error listing responders")
+							}
+							return newServer(config, c.String("bind"), c.Int("port")).ListenAndServeTLS(c.String("cert"), c.String("key"))
 						},
 					},
 				},
