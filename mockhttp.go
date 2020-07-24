@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/nicklarsennz/mock-http-response/responders"
 	"github.com/pkg/errors"
@@ -54,7 +55,10 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 		if !responder.When.Headers.AppearIn(req.Header) {
 			continue
 		}
-		if responder.When.Body != bodyString(req) {
+
+		trimmedResponderBody := strings.Trim(responder.When.Body, " \r\n")
+		trimmedRequestBody := strings.Trim(bodyString(req), " \r\n")
+		if trimmedResponderBody != trimmedRequestBody {
 			continue
 		}
 
