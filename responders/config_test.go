@@ -27,7 +27,7 @@ func TestResponderCount(t *testing.T) {
 		t.Errorf(errors.Wrap(err, "ParseConfig").Error())
 	}
 
-	const expected = 3
+	const expected = 4
 	actual := len(config.Responders)
 	if actual != expected {
 		t.Errorf("Expected to %d responders, found %d", expected, actual)

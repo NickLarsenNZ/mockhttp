@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/nicklarsennz/mock-http-response/responders"
 	"github.com/pkg/errors"
@@ -40,6 +41,7 @@ func (t *mockTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 // Todo: move this to the responder package
 // I think we need more clever matching, best match, not just first match
 func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.Response {
+	trimmedRequestBody := strings.Trim(bodyString(req), " \r\n")
 
 	// Loop through responders which match the method and path
 	for _, responder := range config.Responders {
@@ -54,7 +56,9 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 		if !responder.When.Headers.AppearIn(req.Header) {
 			continue
 		}
-		if responder.When.Body != bodyString(req) {
+
+		trimmedResponderBody := strings.Trim(responder.When.Body, " \r\n")
+		if trimmedResponderBody != trimmedRequestBody {
 			continue
 		}
 
