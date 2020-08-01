@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	mockhttp "github.com/nicklarsennz/mock-http-response"
+	mockhttp "github.com/nicklarsennz/mockhttp"
 	"github.com/pkg/errors"
 )
 
