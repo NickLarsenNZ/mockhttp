@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/nicklarsennz/mock-http-response/responders"
+	"github.com/nicklarsennz/mockhttp/responders"
 	"github.com/olekukonko/tablewriter"
 )
 

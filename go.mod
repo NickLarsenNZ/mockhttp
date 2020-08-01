@@ -1,4 +1,4 @@
-module github.com/nicklarsennz/mock-http-response
+module github.com/nicklarsennz/mockhttp
 
 go 1.14
 

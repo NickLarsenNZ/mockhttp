@@ -1,4 +1,4 @@
-# `mock-http-response`
+# `mockhttp`
 
 ## How to use
 
@@ -59,7 +59,7 @@ responders:
       ]
 ```
 
-Instantiate the mock `http.Client` and hand it to your app to use. `mock-http-response` will catch the requests, match them to the `when` conditions and return the `then` response.
+Instantiate the mock `http.Client` and hand it to your app to use. `mockhttp` will catch the requests, match them to the `when` conditions and return the `then` response.
 
 ```go
 package main
@@ -67,7 +67,7 @@ package main
 import (
 	"testing"
 
-	mockhttp "github.com/nicklarsennz/mock-http-response"
+	mockhttp "github.com/nicklarsennz/mockhttp"
 )
 
 func TestSomeThing(t *testing.T) {

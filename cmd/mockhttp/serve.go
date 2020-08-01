@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	mockhttp "github.com/nicklarsennz/mock-http-response"
-	"github.com/nicklarsennz/mock-http-response/responders"
+	"github.com/nicklarsennz/mockhttp"
+	"github.com/nicklarsennz/mockhttp/responders"
 )
 
 func newServer(config *responders.ResponderConfig, bind_addr string, bind_port int) *http.Server {
