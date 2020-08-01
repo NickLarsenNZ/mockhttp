@@ -1,0 +1,48 @@
+name: Tag
+on:
+  tags:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest # eventually use a build matrix for multiple targets
+    steps:
+    - uses: actions/setup-go@v1
+      with:
+        go-version: 1.14.x
+    - uses: actions/checkout@v2
+    - uses: olegtarasov/get-tag@v2 # $GIT_TAG_NAME
+    - uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - shell: bash
+      env:
+        OS: ${{ runner.os }}
+        CGO_ENABLED: 0
+      run: |
+        OS=$(echo $OS | tr [A-Z] [a-z])
+        go build -a -ldflags '-extldflags "-static"' -v -o build/mockhttp-${OS}-${GIT_TAG_NAME} ./cmd/mockhttp
+    - uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: build
+
+  docker:
+    name: Build Docker Image
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v1
+      with:
+        name: build
+        path: build
+    - uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicklarsennz/mockhttp
+        username: nicklarsennz
+        password: ${{ secrets.DOCKERHUB_SECRET }}
+        tag_semver: true

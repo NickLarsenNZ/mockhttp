@@ -1,6 +1,42 @@
-# `mock-http-response`
+# `mockhttp`
+
+A testing utility for serving static responses.
 
 ## How to use
+
+### Standalone
+
+You can run a containerised instance
+
+```sh
+alias mockhttp='docker run --rm --network=host -u $(id -u) -v $(pwd):$(pwd):ro -w $(pwd) nicklarsennz/mockhttp'
+mockhttp list  # Get a tabular list of responders listed in responders.yml
+mockhttp serve # Serve the responders in responders.yml on http://localhost:8080
+```
+
+<details>
+ <summary>Example responders.yml</summary>
+```yml
+responders:
+- when:
+    http:
+      method: GET
+      path: /things
+  then:
+    http:
+      status: 200
+    headers:
+      Content-Type: application/json
+    body: |
+      [
+          {"Name": "thing1"},
+          {"Name": "thing2"},
+          {"Name": "thing3"},
+      ]
+```
+</details>
+
+### As part of your go tests
 
 <details>
  <summary>Assuming some code to be tested</summary>
@@ -59,7 +95,7 @@ responders:
       ]
 ```
 
-Instantiate the mock `http.Client` and hand it to your app to use. `mock-http-response` will catch the requests, match them to the `when` conditions and return the `then` response.
+Instantiate the mock `http.Client` and hand it to your app to use. `mockhttp` will catch the requests, match them to the `when` conditions and return the `then` response.
 
 ```go
 package main
@@ -67,7 +103,7 @@ package main
 import (
 	"testing"
 
-	mockhttp "github.com/nicklarsennz/mock-http-response"
+	mockhttp "github.com/nicklarsennz/mockhttp"
 )
 
 func TestSomeThing(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/nicklarsennz/mock-http-response/responders"
+	"github.com/nicklarsennz/mockhttp/responders"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 )

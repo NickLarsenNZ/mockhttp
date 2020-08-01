@@ -3,7 +3,7 @@ package responders_test
 import (
 	"testing"
 
-	"github.com/nicklarsennz/mock-http-response/responders"
+	"github.com/nicklarsennz/mockhttp/responders"
 	"github.com/pkg/errors"
 )
 
