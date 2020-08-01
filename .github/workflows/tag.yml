@@ -1,6 +1,6 @@
 name: Tag
 on:
-  tags:
+  tags: ["*"]
 
 jobs:
   build:
