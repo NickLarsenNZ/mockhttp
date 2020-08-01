@@ -47,3 +47,10 @@ jobs:
         username: nicklarsennz
         password: ${{ secrets.DOCKERHUB_SECRET }}
         tag_semver: true
+    # For whatever reason, the above won't push the latest tag, so we have to do it again
+    - uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicklarsennz/mockhttp
+        username: nicklarsennz
+        password: ${{ secrets.DOCKERHUB_SECRET }}
+        tag: latest
