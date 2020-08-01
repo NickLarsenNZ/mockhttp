@@ -1,6 +1,42 @@
 # `mockhttp`
 
+A testing utility for serving static responses.
+
 ## How to use
+
+### Standalone
+
+You can run a containerised instance
+
+```sh
+alias mockhttp='docker run --rm --network=host -u $(id -u) -v $(pwd):$(pwd):ro -w $(pwd) nicklarsennz/mockhttp'
+mockhttp list  # Get a tabular list of responders listed in responders.yml
+mockhttp serve # Serve the responders in responders.yml on http://localhost:8080
+```
+
+<details>
+ <summary>Example responders.yml</summary>
+```yml
+responders:
+- when:
+    http:
+      method: GET
+      path: /things
+  then:
+    http:
+      status: 200
+    headers:
+      Content-Type: application/json
+    body: |
+      [
+          {"Name": "thing1"},
+          {"Name": "thing2"},
+          {"Name": "thing3"},
+      ]
+```
+</details>
+
+### As part of your go tests
 
 <details>
  <summary>Assuming some code to be tested</summary>
