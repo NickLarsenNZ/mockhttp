@@ -16,6 +16,7 @@ mockhttp serve # Serve the responders in responders.yml on http://localhost:8080
 
 <details>
  <summary>Example responders.yml</summary>
+
 ```yml
 responders:
 - when:
