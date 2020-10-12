@@ -17,7 +17,11 @@ func newServer(config *responders.ResponderConfig, bind_addr string, bind_port i
 	for _, res_iter := range config.Responders {
 		var responder = res_iter // https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
 		handler := func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("Hit on:", r.Method, r.URL.Path)
+			var fullPath = r.URL.Path
+			if r.URL.RawQuery != "" {
+				fullPath = fullPath + "?" + r.URL.RawQuery
+			}
+			fmt.Println("Hit on:", r.Method, fullPath)
 
 			res := mockhttp.MatchResponse(r, config)
 
