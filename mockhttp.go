@@ -43,6 +43,12 @@ func (t *mockTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.Response {
 	trimmedRequestBody := strings.Trim(bodyString(req), " \r\n")
 
+	var fullPath = req.URL.Path
+	if req.URL.RawQuery != "" {
+		fullPath = fullPath + "?" + req.URL.RawQuery
+	}
+	fmt.Println(req.Method + " " + fullPath)
+
 	// Loop through responders which match the method and path
 	for _, responder := range config.Responders {
 
@@ -50,7 +56,7 @@ func MatchResponse(req *http.Request, config *responders.ResponderConfig) *http.
 		if responder.When.Http.Method != req.Method {
 			continue
 		}
-		if responder.When.Http.Path != req.URL.Path {
+		if responder.When.Http.Path != fullPath {
 			continue
 		}
 		if !responder.When.Headers.AppearIn(req.Header) {

@@ -71,3 +71,66 @@ func TestMatchResponse(t *testing.T) {
 		t.Errorf("\nexpected body: '%s'\nactual body: '%s'", expectedBody, actualBody)
 	}
 }
+
+func TestMatchResponseQueryParam(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://anything/api?offset=4", nil)
+	if err != nil {
+		t.Error(errors.Wrap(err, "http.NewRequest").Error())
+	}
+
+	config := &responders.ResponderConfig{
+		Responders: []responders.Responder{
+			{
+				When: responders.WhenRequest{
+					Http: responders.WhenHttp{
+						Method: "GET",
+						Path:   "/api",
+					},
+				},
+				Then: responders.ThenResponse{
+					Http: responders.ThenHttp{
+						Status:  200,
+						Message: "OK",
+					},
+					Headers: map[string]string{"Content-Type": "text/plain"},
+					Body:    "Hello",
+				},
+			},
+			{
+				When: responders.WhenRequest{
+					Http: responders.WhenHttp{
+						Method: "GET",
+						Path:   "/api?offset=4",
+					},
+				},
+				Then: responders.ThenResponse{
+					Http: responders.ThenHttp{
+						Status:  200,
+						Message: "OK",
+					},
+					Headers: map[string]string{"Content-Type": "text/plain"},
+					Body:    "Goodbye",
+				},
+			},
+		},
+	}
+
+	var response *http.Response
+	response = MatchResponse(req, config)
+	if response == nil {
+		t.Fatalf("nil response")
+	}
+
+	// Check Body
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		t.Errorf(errors.Wrap(err, "ioutil.ReadAll").Error())
+	}
+
+	expectedBody := "Goodbye"
+	actualBody := strings.TrimSpace(string(body))
+
+	if expectedBody != actualBody {
+		t.Errorf("\nexpected body: '%s'\nactual body: '%s'", expectedBody, actualBody)
+	}
+}
